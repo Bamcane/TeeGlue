@@ -207,6 +207,7 @@ void CGameControllerBomb::OnCharacterSpawn(CCharacter *pChr)
 
 	// give default weapons
 	pChr->GiveWeapon(WEAPON_HAMMER, -1);
+	pChr->SetWeapon(WEAPON_HAMMER);
 
 	// prevent respawn
 	pChr->GetPlayer()->m_RespawnDisabled = GetStartRespawnState();
