@@ -18,6 +18,7 @@
 
 #include "entities/character.h"
 #include "entities/projectile.h"
+#include "gamemodes/bomb.h"
 #include "gamemodes/ctf.h"
 #include "gamemodes/dm.h"
 #include "gamemodes/lms.h"
@@ -1758,6 +1759,8 @@ void CGameContext::OnInit()
 		m_pController = new CGameControllerLTS(this);
 	else if(str_comp_nocase(Config()->m_SvGametype, "tdm") == 0)
 		m_pController = new CGameControllerTDM(this);
+	else if(str_comp_nocase(Config()->m_SvGametype, "bomb") == 0)
+		m_pController = new CGameControllerBomb(this);
 	else
 		m_pController = new CGameControllerDM(this);
 

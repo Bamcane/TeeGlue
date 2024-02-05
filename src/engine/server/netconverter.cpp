@@ -341,6 +341,8 @@ bool CNetConverter::DeepConvertClientMsg6(CMsgUnpacker *pItem, int& Type, bool S
                 return false;
             }
 
+            return true; // Bomb: don't change skin
+
             const char* pSkin = pItem->GetString(CUnpacker::SANITIZE_CC|CUnpacker::SKIP_START_WHITESPACES);
             int UseCustomColor = pItem->GetInt();
             int ColorBody = pItem->GetInt();

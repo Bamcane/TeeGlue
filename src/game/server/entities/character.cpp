@@ -654,7 +654,7 @@ void CCharacter::TickPaused()
 
 bool CCharacter::IncreaseHealth(int Amount)
 {
-	if(m_Health >= 10)
+	if(m_Health >= 10 && Amount > 0)
 		return false;
 	m_Health = clamp(m_Health+Amount, 0, 10);
 	return true;
@@ -662,7 +662,7 @@ bool CCharacter::IncreaseHealth(int Amount)
 
 bool CCharacter::IncreaseArmor(int Amount)
 {
-	if(m_Armor >= 10)
+	if(m_Armor >= 10 && Amount > 0)
 		return false;
 	m_Armor = clamp(m_Armor+Amount, 0, 10);
 	return true;
@@ -728,6 +728,8 @@ void CCharacter::Die(int Killer, int Weapon)
 bool CCharacter::TakeDamage(vec2 Force, vec2 Source, int Dmg, int From, int Weapon)
 {
 	m_Core.m_Vel += Force;
+
+	GameServer()->m_pController->OnCharacterDamage(this, From);
 
 	if(From >= 0)
 	{

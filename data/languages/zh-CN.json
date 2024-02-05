@@ -1,6 +1,10 @@
 {
 "translated strings": [
 	{
+		"key": "'%s' became bomb!",
+		"value": "'%s' 变成了炸弹!"
+	},
+	{
 		"key": "'%s' called for vote to kick '%s' (%s)",
 		"value": "'%s' 发起投票想要踢除 '%s' (%s)"
 	},

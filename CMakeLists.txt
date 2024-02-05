@@ -608,6 +608,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   gamecontext.h
   gamecontroller.cpp
   gamecontroller.h
+  gamemodes/bomb.cpp
+  gamemodes/bomb.h
   gamemodes/ctf.cpp
   gamemodes/ctf.h
   gamemodes/dm.cpp
