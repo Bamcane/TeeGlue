@@ -17,6 +17,7 @@ public:
 	void OnCharacterSpawn(class CCharacter *pChr) override;
 	void OnCharacterDamage(class CCharacter *pChr, int From) override;
 	void OnPlayerConnect(CPlayer *pPlayer) override;
+	void OnPlayerDisconnect(CPlayer *pPlayer) override;
 	bool IsFriendlyFire(int ClientID1, int ClientID2) const;
 };
 
