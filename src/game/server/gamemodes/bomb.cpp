@@ -334,8 +334,11 @@ void CGameControllerBomb::OnPlayerDisconnect(CPlayer *pPlayer)
 	if(pPlayer->GetCID() == m_BombPlayer)
 	{
 		m_BombPlayer = -1;
-		GameServer()->CreateExplosion(pPlayer->GetCharacter()->GetPos(), -1, WEAPON_GAME, 0);
-		GameServer()->CreateSound(pPlayer->GetCharacter()->GetPos(), SOUND_GRENADE_EXPLODE);
+		if(pPlayer->GetCharacter())
+		{
+			GameServer()->CreateExplosion(pPlayer->GetCharacter()->GetPos(), -1, WEAPON_GAME, 0);
+			GameServer()->CreateSound(pPlayer->GetCharacter()->GetPos(), SOUND_GRENADE_EXPLODE);
+		}
 	}
 
 	IGameController::OnPlayerDisconnect(pPlayer);
