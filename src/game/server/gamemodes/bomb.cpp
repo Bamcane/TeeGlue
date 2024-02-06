@@ -104,9 +104,9 @@ void CGameControllerBomb::ChooseBomb()
 			if(GameServer()->m_apPlayers[i]->GetCharacter())
 			{
 				// default health
-				GameServer()->m_apPlayers[i]->GetCharacter()->IncreaseHealth(minimum(10, Config()->m_SvBombExplodeTime));
+				GameServer()->m_apPlayers[i]->GetCharacter()->m_Health = minimum(10, Config()->m_SvBombExplodeTime);
 				// default armor
-				GameServer()->m_apPlayers[i]->GetCharacter()->IncreaseArmor(Config()->m_SvBombExplodeTime > 10 ? Config()->m_SvBombExplodeTime - 10 : 0);
+				GameServer()->m_apPlayers[i]->GetCharacter()->m_Armor = Config()->m_SvBombExplodeTime > 10 ? Config()->m_SvBombExplodeTime - 10 : 0;
 			}
 		}
 	}
@@ -173,9 +173,9 @@ void CGameControllerBomb::Tick()
 					if(GameServer()->GetPlayerChar(i))
 					{
 						if(m_BombLeftTick / Server()->TickSpeed() >= 10) 
-							GameServer()->GetPlayerChar(i)->IncreaseArmor(-1);
+							GameServer()->GetPlayerChar(i)->m_Armor = m_BombLeftTick / Server()->TickSpeed() - 10;
 						else
-							GameServer()->GetPlayerChar(i)->IncreaseHealth(-1);
+							GameServer()->GetPlayerChar(i)->m_Health = m_BombLeftTick / Server()->TickSpeed();
 					}
 				}
 			}
@@ -258,6 +258,29 @@ void CGameControllerBomb::OnCharacterDamage(CCharacter *pChr, int From)
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 		}
 	}
+}
+
+int CGameControllerBomb::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon)
+{
+	if(pVictim && pVictim->GetPlayer()->GetCID() == m_BombPlayer)
+	{
+		GameServer()->CreateExplosion(pVictim->GetPos(), -1, WEAPON_GAME, 0);
+		GameServer()->CreateSound(pVictim->GetPos(), SOUND_GRENADE_EXPLODE);
+		
+		pVictim->GetPlayer()->m_TeeInfos = s_PlayerInfo;
+		// update all clients
+		for(int i = 0; i < MAX_CLIENTS; ++i)
+		{
+			if(!GameServer()->m_apPlayers[i] || 
+				(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
+					Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
+				continue;
+
+			GameServer()->SendSkinChange(pVictim->GetPlayer()->GetCID(), i);
+		}
+	}
+
+	return IGameController::OnCharacterDeath(pVictim, pKiller, Weapon);
 }
 
 bool CGameControllerBomb::IsFriendlyFire(int ClientID1, int ClientID2) const

@@ -15,6 +15,7 @@ public:
 	void Tick() override;
 	void DoWincheckRound() override;
 	void OnCharacterSpawn(class CCharacter *pChr) override;
+	int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon) override;
 	void OnCharacterDamage(class CCharacter *pChr, int From) override;
 	void OnPlayerConnect(CPlayer *pPlayer) override;
 	void OnPlayerDisconnect(CPlayer *pPlayer) override;
