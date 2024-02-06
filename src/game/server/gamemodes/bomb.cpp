@@ -146,21 +146,7 @@ void CGameControllerBomb::Tick()
 	{
 		if(m_BombPlayer != -1 && m_BombLeftTick <= 0)
 		{
-			GameServer()->CreateExplosion(GameServer()->GetPlayerChar(m_BombPlayer)->GetPos(), -1, WEAPON_GAME, 0);
-			GameServer()->CreateSound(GameServer()->GetPlayerChar(m_BombPlayer)->GetPos(), SOUND_GRENADE_EXPLODE);
 			GameServer()->GetPlayerChar(m_BombPlayer)->Die(m_BombPlayer, WEAPON_GAME);
-			GameServer()->m_apPlayers[m_BombPlayer]->m_TeeInfos = s_PlayerInfo;
-			// update all clients
-			for(int i = 0; i < MAX_CLIENTS; ++i)
-			{
-				if(!GameServer()->m_apPlayers[i] || 
-					(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
-						Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
-					continue;
-
-				GameServer()->SendSkinChange(m_BombPlayer, i);
-			}
-			m_BombPlayer = -1;
 		}
 		if(m_BombPlayer != -1)
 		{
