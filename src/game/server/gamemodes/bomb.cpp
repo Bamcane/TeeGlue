@@ -264,6 +264,7 @@ int CGameControllerBomb::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller,
 {
 	if(pVictim && pVictim->GetPlayer()->GetCID() == m_BombPlayer)
 	{
+		m_BombPlayer = -1;
 		GameServer()->CreateExplosion(pVictim->GetPos(), -1, WEAPON_GAME, 0);
 		GameServer()->CreateSound(pVictim->GetPos(), SOUND_GRENADE_EXPLODE);
 		
