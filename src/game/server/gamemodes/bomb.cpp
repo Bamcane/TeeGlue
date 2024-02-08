@@ -114,18 +114,9 @@ void CGameControllerBomb::ChooseBomb()
 	if(AlivePlayerCount > 1)
 	{
 		m_BombPlayer = aAlivePlayers[random_int() % AlivePlayerCount];
-		GameServer()->m_apPlayers[m_BombPlayer]->m_TeeInfos = s_BombInfo;
 		m_BombLeftTick = Server()->TickSpeed() * Config()->m_SvBombExplodeTime;
-		// update all clients
-		for(int i = 0; i < MAX_CLIENTS; ++i)
-		{
-			if(!GameServer()->m_apPlayers[i] || 
-				(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
-					Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
-				continue;
-
-			GameServer()->SendSkinChange(m_BombPlayer, i);
-		}
+		GameServer()->UpdatePlayerSkin(m_BombPlayer, s_BombInfo);
+		
 		for(int i = 0; i < MAX_CLIENTS; i ++)
 		{
 			if(!GameServer()->m_apPlayers[i])
@@ -208,30 +199,11 @@ void CGameControllerBomb::OnCharacterDamage(CCharacter *pChr, int From)
 		return;
 	if(From == m_BombPlayer)
 	{
-		GameServer()->m_apPlayers[From]->m_TeeInfos = s_PlayerInfo;
-		// update all clients
-		for(int i = 0; i < MAX_CLIENTS; ++i)
-		{
-			if(!GameServer()->m_apPlayers[i] || 
-				(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
-					Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
-				continue;
-
-			GameServer()->SendSkinChange(From, i);
-		}
-
 		m_BombPlayer = pChr->GetPlayer()->GetCID();
-		pChr->GetPlayer()->m_TeeInfos = s_BombInfo;
-		// update all clients
-		for(int i = 0; i < MAX_CLIENTS; ++i)
-		{
-			if(!GameServer()->m_apPlayers[i] || 
-				(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
-					Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
-				continue;
 
-			GameServer()->SendSkinChange(m_BombPlayer, i);
-		}
+		GameServer()->UpdatePlayerSkin(From, s_PlayerInfo);
+		GameServer()->UpdatePlayerSkin(m_BombPlayer, s_BombInfo);
+
 		for(int i = 0; i < MAX_CLIENTS; i ++)
 		{
 			if(!GameServer()->m_apPlayers[i])
@@ -254,17 +226,7 @@ int CGameControllerBomb::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller,
 		GameServer()->CreateExplosion(pVictim->GetPos(), -1, WEAPON_GAME, 0);
 		GameServer()->CreateSound(pVictim->GetPos(), SOUND_GRENADE_EXPLODE);
 		
-		pVictim->GetPlayer()->m_TeeInfos = s_PlayerInfo;
-		// update all clients
-		for(int i = 0; i < MAX_CLIENTS; ++i)
-		{
-			if(!GameServer()->m_apPlayers[i] || 
-				(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
-					Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
-				continue;
-
-			GameServer()->SendSkinChange(pVictim->GetPlayer()->GetCID(), i);
-		}
+		GameServer()->UpdatePlayerSkin(pVictim->GetPlayer()->GetCID(), s_PlayerInfo);
 	}
 
 	return IGameController::OnCharacterDeath(pVictim, pKiller, Weapon);
@@ -324,18 +286,7 @@ void CGameControllerBomb::DoWincheckRound()
 
 void CGameControllerBomb::OnPlayerConnect(CPlayer *pPlayer)
 {	
-	pPlayer->m_TeeInfos = s_PlayerInfo;
-	// update all clients
-	for(int i = 0; i < MAX_CLIENTS; ++i)
-	{
-		if(!GameServer()->m_apPlayers[i] || 
-			(!Server()->ClientIngame(i) && !GameServer()->m_apPlayers[i]->IsDummy()) || 
-				Server()->GetClientVersion(i) < CGameContext::MIN_SKINCHANGE_CLIENTVERSION)
-			continue;
-
-		GameServer()->SendSkinChange(pPlayer->GetCID(), i);
-	}
-
+	GameServer()->UpdatePlayerSkin(pPlayer->GetCID(), s_PlayerInfo);
 	IGameController::OnPlayerConnect(pPlayer);
 }
 
